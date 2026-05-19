@@ -1,0 +1,4 @@
+interface:
+  display_name: "ProjectInit"
+  short_description: "Initialize project AGENTS, SOUL, and layered memory."
+  default_prompt: "Initialize this project with AGENTS.md, SOUL.md, and layered memory constraints."
