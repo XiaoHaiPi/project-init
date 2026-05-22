@@ -181,13 +181,13 @@ Task and SubTask execution:
 
 ## Memory Constraints
 
-`memory/current/` is the quick view for the current focus task. It only stores the task currently being handled.
+`memory/current/` is the quick view for active tasks. It can hold multiple tasks being handled at the same time.
 
-`memory/ongoing/` is the complete set of unfinished tasks. The current focus task must exist in both `memory/current/` and `memory/ongoing/<task-folder>/`.
+`memory/ongoing/` is the complete set of unfinished tasks. Every active task must exist in both `memory/current/` and `memory/ongoing/<task-folder>/`.
 
 `memory/history/` is the archive of completed tasks. A task must not exist in both `ongoing` and `history`.
 
-`memory/current/` contains only:
+`memory/current/` stores the same six files for each active task:
 
 - `requirement.md`: current requirement and acceptance criteria.
 - `plan.md`: current task plan.
@@ -209,10 +209,10 @@ Each task folder contains:
 
 ## Task Switching Flow
 
-When the user starts a new task, process the previous `memory/current/` first:
+When the user starts a new task, process the active tasks in `memory/current/` first:
 
-1. If the previous task is unfinished, sync `current` into `memory/ongoing/<old-task>/`.
-2. If the previous task is completed, place it in `memory/history/<old-task>/` and remove it from `ongoing`.
+1. If an active task is unfinished, sync its current state into `memory/ongoing/<task-folder>/`.
+2. If an active task is completed, place it in `memory/history/<task-folder>/` and remove it from `ongoing`.
 3. Create `memory/ongoing/<new-task>/`.
 4. Write the new task into `memory/current/`.
 5. Sync the same requirement, plan, sprint, task, subtasks, and summary files into `memory/ongoing/<new-task>/`.
@@ -223,7 +223,7 @@ When a task is completed:
 1. Move the task folder from `memory/ongoing/` to `memory/history/`.
 2. Remove the task from `memory/ongoing/index.md`.
 3. Add or update the task entry in `memory/history/index.md`.
-4. If the completed task is the current focus task, clear `memory/current/` or switch it to the next active task.
+4. If the completed task is still present in `memory/current/`, remove that task snapshot there.
 
 ## State File Constraints
 
@@ -255,7 +255,7 @@ def memory_index_content() -> str:
 
 项目记忆按任务状态和开发流程分层。
 
-- `current/`：当前焦点任务，只保留很短的需求、计划、Sprint、主任务、子任务和进展摘要。
+- `current/`：当前进行中的任务快照区，可同时包含多个任务；每个任务只保留很短的需求、计划、Sprint、主任务、子任务和进展摘要。
 - `ongoing/`：未完成任务总集，每个任务一个文件夹。
 - `history/`：已完成任务档案，每个任务一个文件夹。
 
