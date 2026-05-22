@@ -181,13 +181,13 @@ Task and SubTask execution:
 
 ## Memory Constraints
 
-`memory/current/` is the quick view for active tasks. It can hold multiple tasks being handled at the same time.
+`memory/current/` is the active task folder set. Each active task lives in its own folder under `memory/current/<task-folder>/`.
 
-`memory/ongoing/` is the complete set of unfinished tasks. Every active task must exist in both `memory/current/` and `memory/ongoing/<task-folder>/`.
+`memory/ongoing/` is the complete set of unfinished tasks. Every active task must exist in both `memory/current/<task-folder>/` and `memory/ongoing/<task-folder>/`.
 
 `memory/history/` is the archive of completed tasks. A task must not exist in both `ongoing` and `history`.
 
-`memory/current/` stores the same six files for each active task:
+Each task folder in `memory/current/` stores:
 
 - `requirement.md`: current requirement and acceptance criteria.
 - `plan.md`: current task plan.
@@ -209,21 +209,21 @@ Each task folder contains:
 
 ## Task Switching Flow
 
-When the user starts a new task, process the active tasks in `memory/current/` first:
+When the user starts a new task, process the active task folders in `memory/current/` first:
 
-1. If an active task is unfinished, sync its current state into `memory/ongoing/<task-folder>/`.
-2. If an active task is completed, place it in `memory/history/<task-folder>/` and remove it from `ongoing`.
+1. If an active task is unfinished, sync its current folder into `memory/ongoing/<task-folder>/`.
+2. If an active task is completed, place it in `memory/history/<task-folder>/` and remove the same folder from `memory/current/` and `ongoing`.
 3. Create `memory/ongoing/<new-task>/`.
-4. Write the new task into `memory/current/`.
+4. Write the new task into both `memory/current/<new-task>/` and `memory/ongoing/<new-task>/`.
 5. Sync the same requirement, plan, sprint, task, subtasks, and summary files into `memory/ongoing/<new-task>/`.
 6. Update `memory/ongoing/index.md` and `memory/history/index.md`.
 
 When a task is completed:
 
 1. Move the task folder from `memory/ongoing/` to `memory/history/`.
-2. Remove the task from `memory/ongoing/index.md`.
-3. Add or update the task entry in `memory/history/index.md`.
-4. If the completed task is still present in `memory/current/`, remove that task snapshot there.
+2. Remove the same task folder from `memory/current/`.
+3. Remove the task from `memory/ongoing/index.md`.
+4. Add or update the task entry in `memory/history/index.md`.
 
 ## State File Constraints
 
@@ -255,7 +255,7 @@ def memory_index_content() -> str:
 
 项目记忆按任务状态和开发流程分层。
 
-- `current/`：当前进行中的任务快照区，可同时包含多个任务；每个任务只保留很短的需求、计划、Sprint、主任务、子任务和进展摘要。
+- `current/`：当前进行中的任务文件夹集合，每个任务一个文件夹，里面只保留很短的需求、计划、Sprint、主任务、子任务和进展摘要。
 - `ongoing/`：未完成任务总集，每个任务一个文件夹。
 - `history/`：已完成任务档案，每个任务一个文件夹。
 
@@ -416,33 +416,8 @@ def initialize(
         )
     )
     results.append(write_if_missing(root / "memory" / "INDEX.md", memory_index_content()))
-    results.append(
-        write_if_missing(
-            root / "memory" / "current" / "requirement.md",
-            current_requirement_content(active_task, requirement),
-        )
-    )
-    results.append(
-        write_if_missing(root / "memory" / "current" / "plan.md", current_plan_content(active_task))
-    )
-    results.append(
-        write_if_missing(
-            root / "memory" / "current" / "sprint.md",
-            current_sprint_content(active_task),
-        )
-    )
-    results.append(
-        write_if_missing(root / "memory" / "current" / "task.md", current_task_content(active_task))
-    )
-    results.append(
-        write_if_missing(
-            root / "memory" / "current" / "subtasks.md",
-            current_subtasks_content(active_task),
-        )
-    )
-    results.append(
-        write_if_missing(root / "memory" / "current" / "summary.md", current_summary_content(active_task))
-    )
+    current_root = root / "memory" / "current"
+    current_root.mkdir(parents=True, exist_ok=True)
     results.append(
         write_if_missing(
             root / "memory" / "ongoing" / "index.md",
@@ -452,6 +427,19 @@ def initialize(
     results.append(write_if_missing(root / "memory" / "history" / "index.md", history_index_content()))
 
     if active_task and task_folder:
+        current_task_root = current_root / task_folder
+        results.append(
+            write_if_missing(
+                current_task_root / "requirement.md",
+                current_requirement_content(active_task, requirement),
+            )
+        )
+        results.append(write_if_missing(current_task_root / "plan.md", current_plan_content(active_task)))
+        results.append(write_if_missing(current_task_root / "sprint.md", current_sprint_content(active_task)))
+        results.append(write_if_missing(current_task_root / "task.md", current_task_content(active_task)))
+        results.append(write_if_missing(current_task_root / "subtasks.md", current_subtasks_content(active_task)))
+        results.append(write_if_missing(current_task_root / "summary.md", current_summary_content(active_task)))
+
         task_root = root / "memory" / "ongoing" / task_folder
         results.append(
             write_if_missing(

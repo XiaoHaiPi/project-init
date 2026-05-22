@@ -81,10 +81,10 @@ memory/
 
 Semantics:
 
-- `current` is the active task view. It can hold multiple tasks being handled at the same time.
+- `current` is the active task folder set. Each active task lives in its own folder under `current/<task-folder>/`.
 - `ongoing` is the complete set of unfinished task archives.
 - `history` is the complete set of finished task archives.
-- Every active task must exist in both `current` and `ongoing/<task-folder>`.
+- Every active task must exist in both `current/<task-folder>/` and `ongoing/<task-folder>/`.
 - A task must not exist in both `ongoing` and `history`.
 - `index.md` files are short navigation files, not detailed logs.
 - Each task follows `Requirement -> Plan -> Sprint -> Task -> SubTask`.
@@ -95,11 +95,11 @@ Semantics:
 
 When a user starts a new task:
 
-1. Read the active task files in `memory/current/`.
-2. If an active task is unfinished, sync its current files into `memory/ongoing/<task-folder>/`.
-3. If an active task is finished, move or sync it into `memory/history/<task-folder>/` and remove it from `ongoing`.
+1. Read the active task folders in `memory/current/`.
+2. If an active task is unfinished, sync its current folder into `memory/ongoing/<task-folder>/`.
+3. If an active task is finished, move or sync its folder into `memory/history/<task-folder>/` and remove the same folder from `memory/current/` and `ongoing`.
 4. Create `memory/ongoing/<new-task>/`.
-5. Write the new task into both `memory/current/` and `memory/ongoing/<new-task>/`.
+5. Write the new task into both `memory/current/<new-task>/` and `memory/ongoing/<new-task>/`.
 6. Update `memory/ongoing/index.md` and `memory/history/index.md`.
 
 When a user provides a requirement:
@@ -113,8 +113,8 @@ When a user provides a requirement:
 When a task is completed:
 
 1. Move its task folder from `memory/ongoing/` to `memory/history/`.
-2. Remove the task from `memory/ongoing/index.md`.
-3. Add or update the task entry in `memory/history/index.md`.
-4. If the completed task is still present in `memory/current/`, remove that task snapshot there.
+2. Remove the same task folder from `memory/current/`.
+3. Remove the task from `memory/ongoing/index.md`.
+4. Add or update the task entry in `memory/history/index.md`.
 
-Keep each current task short. Record only the active requirement, plan, sprint, main task, subtasks, and compact progress summary.
+Keep each current task folder short. Record only the active requirement, plan, sprint, main task, subtasks, and compact progress summary.
