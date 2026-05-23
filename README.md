@@ -6,8 +6,8 @@ Codex skill，用于给一个项目初始化协作约束和分层任务记忆。
 
 - 创建项目级协作规则文件：`AGENTS.md`
 - 创建项目风格约束文件：`SOUL.md`
-- 创建任务记忆目录：`memory/current/`、`memory/ongoing/`、`memory/history/`
-- 支持带初始任务初始化，把需求同步写入 `current` 和 `ongoing/<task-folder>/`
+- 创建任务记忆目录：`memory/current/<task-folder>/`、`memory/ongoing/<task-folder>/`、`memory/history/<task-folder>/`
+- 支持带初始任务初始化，把需求同步写入 `current/<task-folder>/` 和 `ongoing/<task-folder>/`
 - 遇到已有 `AGENTS.md` 或 `SOUL.md` 时，不覆盖原文件，而是生成待合并文件
 
 ## 安装
@@ -54,17 +54,31 @@ python ~/.codex/skills/project-init/scripts/init_project_constraints.py \
 memory/
 ├── INDEX.md
 ├── current/
-│   ├── requirement.md
-│   ├── plan.md
-│   ├── sprint.md
-│   ├── task.md
-│   ├── subtasks.md
-│   └── summary.md
+│   └── <task-folder>/
+│       ├── requirement.md
+│       ├── plan.md
+│       ├── sprint.md
+│       ├── task.md
+│       ├── subtasks.md
+│       └── summary.md
 ├── ongoing/
 │   ├── index.md
 │   └── <task-folder>/
+│       ├── requirement.md
+│       ├── plan.md
+│       ├── sprint.md
+│       ├── task.md
+│       ├── subtasks.md
+│       └── summary.md
 └── history/
-    └── index.md
+    ├── index.md
+    └── <task-folder>/
+        ├── requirement.md
+        ├── plan.md
+        ├── sprint.md
+        ├── task.md
+        ├── subtasks.md
+        └── summary.md
 ```
 
 ## 文件策略

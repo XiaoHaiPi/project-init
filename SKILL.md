@@ -53,15 +53,16 @@ The initialized memory structure is:
 memory/
 ├── INDEX.md
 ├── current/
-│   ├── requirement.md
-│   ├── plan.md
-│   ├── sprint.md
-│   ├── task.md
-│   ├── subtasks.md
-│   └── summary.md
+│   └── <task-folder>/
+│       ├── requirement.md
+│       ├── plan.md
+│       ├── sprint.md
+│       ├── task.md
+│       ├── subtasks.md
+│       └── summary.md
 ├── ongoing/
 │   ├── index.md
-│   └── <short-task-name>/
+│   └── <task-folder>/
 │       ├── requirement.md
 │       ├── plan.md
 │       ├── sprint.md
@@ -81,10 +82,13 @@ memory/
 
 Semantics:
 
-- `current` is the active task folder set. Each active task lives in its own folder under `current/<task-folder>/`.
-- `ongoing` is the complete set of unfinished task archives.
-- `history` is the complete set of finished task archives.
-- Every active task must exist in both `current/<task-folder>/` and `ongoing/<task-folder>/`.
+- `current` is the active task set. It can contain multiple independent task folders under `current/<task-folder>/`.
+- `ongoing` is the hold-task archive layer and the complete set of unfinished task archives.
+- `history` is the complete set of done task archives.
+- `active` means a task folder under `current/<task-folder>/`.
+- `hold` means a task folder under `ongoing/<task-folder>/`.
+- `done` means a task folder under `history/<task-folder>/`.
+- An active task can be copied from `ongoing/<task-folder>/` into `current/<task-folder>/`, then moved back to `ongoing/<task-folder>/` when paused.
 - A task must not exist in both `ongoing` and `history`.
 - `index.md` files are short navigation files, not detailed logs.
 - Each task follows `Requirement -> Plan -> Sprint -> Task -> SubTask`.
@@ -97,10 +101,11 @@ When a user starts a new task:
 
 1. Read the active task folders in `memory/current/`.
 2. If an active task is unfinished, sync its current folder into `memory/ongoing/<task-folder>/`.
-3. If an active task is finished, move or sync its folder into `memory/history/<task-folder>/` and remove the same folder from `memory/current/` and `ongoing`.
-4. Create `memory/ongoing/<new-task>/`.
-5. Write the new task into both `memory/current/<new-task>/` and `memory/ongoing/<new-task>/`.
-6. Update `memory/ongoing/index.md` and `memory/history/index.md`.
+3. If an active task is paused, remove it from `memory/current/` after syncing it back to `memory/ongoing/<task-folder>/`.
+4. If an active task is finished, move or sync its folder into `memory/history/<task-folder>/` and remove the same folder from `memory/current/` and `ongoing`.
+5. Create `memory/ongoing/<new-task>/`.
+6. Write the new task into both `memory/current/<new-task>/` and `memory/ongoing/<new-task>/`.
+7. Update `memory/ongoing/index.md` and `memory/history/index.md`.
 
 When a user provides a requirement:
 

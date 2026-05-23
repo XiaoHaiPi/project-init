@@ -42,7 +42,7 @@ def agents_content() -> str:
 
 1. Read `AGENTS.md` first.
 2. If `SOUL.md` exists, read it next.
-3. To recover the active project state, read `memory/INDEX.md` and `memory/current/`.
+3. To recover the active project state, read `memory/INDEX.md` and all folders under `memory/current/`.
 4. To find unfinished tasks, read `memory/ongoing/index.md`.
 5. To find completed tasks, read `memory/history/index.md`.
 
@@ -181,13 +181,20 @@ Task and SubTask execution:
 
 ## Memory Constraints
 
-`memory/current/` is the active task folder set. Each active task lives in its own folder under `memory/current/<task-folder>/`.
+任务状态分成四个词：`active`、`hold`、`ongoing`、`done`。
 
-`memory/ongoing/` is the complete set of unfinished tasks. Every active task must exist in both `memory/current/<task-folder>/` and `memory/ongoing/<task-folder>/`.
+- `active`：`memory/current/<task-folder>/` 中的任务状态。
+- `hold`：`memory/ongoing/<task-folder>/` 中的任务状态。
+- `ongoing`：未完成任务的归档层，里面保存所有 `hold` 状态任务。
+- `done`：`memory/history/<task-folder>/` 中的任务状态。
 
-`memory/history/` is the archive of completed tasks. A task must not exist in both `ongoing` and `history`.
+`memory/current/` 是 active 任务集合，可同时存在多个任务；每个 active 任务都在自己的文件夹里，彼此独立。
 
-Each task folder in `memory/current/` stores:
+`memory/ongoing/` 是 hold 任务集合。hold 任务可以复制到 `memory/current/` 重新变成 active；active 暂停时再同步回 `memory/ongoing/` 变回 hold。
+
+`memory/history/` 是 done 任务档案。任务完成后进入这里，并且不能同时留在 `ongoing` 和 `history`。
+
+每个 task folder 在 `memory/current/` 和 `memory/ongoing/` 中都存放这六个文件：
 
 - `requirement.md`: current requirement and acceptance criteria.
 - `plan.md`: current task plan.
@@ -212,11 +219,12 @@ Each task folder contains:
 When the user starts a new task, process the active task folders in `memory/current/` first:
 
 1. If an active task is unfinished, sync its current folder into `memory/ongoing/<task-folder>/`.
-2. If an active task is completed, place it in `memory/history/<task-folder>/` and remove the same folder from `memory/current/` and `ongoing`.
-3. Create `memory/ongoing/<new-task>/`.
-4. Write the new task into both `memory/current/<new-task>/` and `memory/ongoing/<new-task>/`.
-5. Sync the same requirement, plan, sprint, task, subtasks, and summary files into `memory/ongoing/<new-task>/`.
-6. Update `memory/ongoing/index.md` and `memory/history/index.md`.
+2. If an active task is paused, remove it from `memory/current/` after syncing it back to `memory/ongoing/<task-folder>/`.
+3. If an active task is completed, place it in `memory/history/<task-folder>/` and remove the same folder from `memory/current/` and `ongoing`.
+4. Create `memory/ongoing/<new-task>/`.
+5. Write the new task into both `memory/current/<new-task>/` and `memory/ongoing/<new-task>/`.
+6. Sync the same requirement, plan, sprint, task, subtasks, and summary files into `memory/ongoing/<new-task>/`.
+7. Update `memory/ongoing/index.md` and `memory/history/index.md`.
 
 When a task is completed:
 
@@ -255,11 +263,11 @@ def memory_index_content() -> str:
 
 项目记忆按任务状态和开发流程分层。
 
-- `current/`：当前进行中的任务文件夹集合，每个任务一个文件夹，里面只保留很短的需求、计划、Sprint、主任务、子任务和进展摘要。
-- `ongoing/`：未完成任务总集，每个任务一个文件夹。
-- `history/`：已完成任务档案，每个任务一个文件夹。
+- `current/`：active 任务集合，可同时存在多个任务；每个任务一个文件夹，彼此独立。
+- `ongoing/`：hold 任务集合，也是未完成任务总集，每个任务一个文件夹。
+- `history/`：done 任务档案，每个任务一个文件夹。
 
-读取当前状态时先看 `current/`。查找未完成任务看 `ongoing/index.md`。查找已完成任务看 `history/index.md`。
+读取当前状态时先看 `current/` 里的所有任务文件夹。查找 hold 任务看 `ongoing/index.md`。查找 done 任务看 `history/index.md`。
 
 每个任务按 `Requirement -> Plan -> Sprint -> Task -> SubTask` 组织：
 
@@ -365,7 +373,7 @@ def ongoing_index_content(
     lines = [
         "# Ongoing Tasks",
         "",
-        "这里索引所有尚未完成的任务。每条索引用一到两句话说明任务内容。",
+        "这里索引所有处于 hold 状态的任务。每条索引用一到两句话说明任务内容。",
         "",
     ]
     if active_task and task_folder:
@@ -386,7 +394,7 @@ def ongoing_index_content(
 def history_index_content() -> str:
     return """# History Tasks
 
-这里索引已经完成并归档的任务。每条索引用一到两句话说明任务内容。
+这里索引已经完成并归档的 done 任务。每条索引用一到两句话说明任务内容。
 
 当前没有已完成任务。
 """
@@ -417,7 +425,6 @@ def initialize(
     )
     results.append(write_if_missing(root / "memory" / "INDEX.md", memory_index_content()))
     current_root = root / "memory" / "current"
-    current_root.mkdir(parents=True, exist_ok=True)
     results.append(
         write_if_missing(
             root / "memory" / "ongoing" / "index.md",
