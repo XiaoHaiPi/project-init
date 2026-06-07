@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ideas</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fb;
+      --surface: #ffffff;
+      --text: #1d2433;
+      --muted: #667085;
+      --line: #d9dee8;
+      --accent: #2563eb;
+      --active: #0f766e;
+      --pending: #b45309;
+      --verified: #166534;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    main {
+      width: min(1180px, calc(100vw - 40px));
+      margin: 32px auto 56px;
+    }
+    h1 { margin: 0 0 8px; font-size: 30px; }
+    h2 { margin: 28px 0 12px; font-size: 20px; }
+    .meta {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      margin-top: 18px;
+      overflow-x: auto;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    .active { background: var(--active); }
+    .pending { background: var(--pending); }
+    .verified { background: var(--verified); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 650;
+      white-space: nowrap;
+      background: #fbfcff;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .empty {
+      color: var(--muted);
+      padding: 12px 0 2px;
+    }
+    code {
+      color: var(--accent);
+      background: #eef4ff;
+      border-radius: 4px;
+      padding: 1px 4px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Ideas</h1>
+    <p class="meta">Source: <code>memory/ideas.md</code> | Generated: {{GENERATED_AT}} UTC | This HTML file is a derived browser view.</p>
+
+    <section class="section">
+      <h2><span class="tag active">Active</span>已实现，正在等待结果</h2>
+      <p class="empty">No active ideas yet.</p>
+      <table>
+        <thead>
+          <tr><th>Idea</th><th>Proposed Time</th><th>Hypothesis</th><th>Theory Support</th><th>Config</th><th>Code Location</th><th>Status</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2><span class="tag pending">Pending</span>待实现</h2>
+      <p class="empty">No pending ideas yet.</p>
+      <table>
+        <thead>
+          <tr><th>Idea</th><th>Proposed Time</th><th>Hypothesis</th><th>Theory Support</th><th>Expected Change</th><th>Priority</th><th>Notes</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2><span class="tag verified">Verified</span>已验证</h2>
+      <p class="empty">No verified ideas yet.</p>
+      <table>
+        <thead>
+          <tr><th>Idea</th><th>Theory Support</th><th>Result</th><th>Config</th><th>Experiment</th><th>Logs</th><th>Code Location</th><th>Decision</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

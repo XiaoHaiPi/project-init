@@ -1,4 +1,4 @@
 interface:
   display_name: "ProjectInit"
-  short_description: "Initialize engineering or research project constraints and memory."
-  default_prompt: "Initialize this project with the appropriate project-type AGENTS.md, SOUL.md, and memory constraints."
+  short_description: "Initialize project constraints and mission-based memory."
+  default_prompt: "Initialize this project with the appropriate project-type AGENTS.md, SOUL.md, and requirements-plan-task mission memory workflow."

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{PROJECT_NAME}} Memory Browser</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="report_assets/report.css">
+</head>
+<body>
+  <main class="site-shell">
+    <section class="report-hero">
+      <p>Static reports</p>
+      <h1>{{PROJECT_NAME}} memory browser</h1>
+      <div class="meta-line">Generated: {{GENERATED_AT}} UTC | Source folder: <code>memory/</code></div>
+    </section>
+    <section class="link-grid" aria-label="Report sections">
+      <a class="link-card" href="ideas_4user.html"><strong>Ideas</strong><span>Generated from memory/ideas.md</span></a>
+      <a class="link-card" href="experiments_4user/index.html"><strong>Experiments</strong><span>Generated from memory/experiments/*.md</span></a>
+    </section>
+  </main>
+  <script src="report_assets/report.js"></script>
+</body>
+</html>
